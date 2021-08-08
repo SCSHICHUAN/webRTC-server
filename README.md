@@ -1,2 +1,2 @@
 # webRTC-server
-how to create a server to webRTC
+how to create a webRTC server
