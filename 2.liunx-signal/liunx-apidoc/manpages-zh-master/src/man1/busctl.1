@@ -1,0 +1,467 @@
+'\" t
+.TH "BUSCTL" "1" "" "systemd 231" "busctl"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+busctl \- 内省与监视 D\-Bus 总线
+.SH "SYNOPSIS"
+.HP \w'\fBbusctl\fR\ 'u
+\fBbusctl\fR [OPTIONS...] [COMMAND] [\fINAME\fR...]
+.SH "描述"
+.PP
+\fBbusctl\fR
+可用于内省与监视 D\-Bus 总线
+.SH "选项"
+.PP
+能够识别的命令行选项如下：
+.PP
+\fB\-\-address=\fR\fB\fIADDRESS\fR\fR
+.RS 4
+连接到
+\fIADDRESS\fR
+指定的总线， 而不是默认的总线(无论是
+\fB\-\-system\fR
+系统总线还是
+\fB\-\-user\fR
+用户总线)。
+.RE
+.PP
+\fB\-\-show\-machine\fR
+.RS 4
+在使用
+\fBlist\fR
+命令显示总线上的所有 peer 列表时， 额外显示一个"MACHINE"列，指明其所属容器的名称。参见
+\fBsystemd-machined.service\fR(8)
+手册。
+.RE
+.PP
+\fB\-\-unique\fR
+.RS 4
+在使用
+\fBlist\fR
+命令显示总线上的所有 peer 列表时，仅显示
+":\fInumber\fR\&.\fInumber\fR"
+格式的"唯一名"(UniqueName)。
+.RE
+.PP
+\fB\-\-acquired\fR
+.RS 4
+在使用
+\fBlist\fR
+命令显示总线上的所有 peer 列表时，与
+\fB\-\-unique\fR
+选项正好相反， 仅显示"易读名"(well\-known name)。
+.RE
+.PP
+\fB\-\-activatable\fR
+.RS 4
+在使用
+\fBlist\fR
+命令显示总线上的所有 peer 列表时， 仅显示当前未被激活并且可以在被访问时自动激活的 peer 。
+.RE
+.PP
+\fB\-\-match=\fR\fB\fIMATCH\fR\fR
+.RS 4
+在使用
+\fBmonitor\fR
+命令监视已交换的消息时， 仅显示与
+\fIMATCH\fR
+匹配的消息。 参见
+\fBsd_bus_add_match\fR(3)
+.RE
+.PP
+\fB\-\-size=\fR
+.RS 4
+在使用
+\fBcapture\fR
+命令捕获已交换的消息时， 指定允许捕获的最大消息尺寸("snaplen")， 默认值是 4096 字节。
+.RE
+.PP
+\fB\-\-list\fR
+.RS 4
+在使用
+\fBtree\fR
+命令显示对象路径时， 不以树形缩进显示，而是以平铺列表的格式显示。
+.RE
+.PP
+\fB\-\-quiet\fR
+.RS 4
+与
+\fBcall\fR
+命令连用，禁止显示应答消息。 注意： 错误消息依然会被显示出来，并且依然可以用返回值判断成败。
+.RE
+.PP
+\fB\-\-verbose\fR
+.RS 4
+与
+\fBcall\fR
+或
+\fBget\-property\fR
+命令连用， 表示以详细模式显示输出。
+.RE
+.PP
+\fB\-\-expect\-reply=\fR\fIBOOL\fR
+.RS 4
+与
+\fBcall\fR
+命令连用， 设置是否等待被调用的方法执行完成。
+"yes"
+表示等待方法执行完成并且返回应答数据， 然后
+\fBbusctl\fR
+将返回一个可用于判断方法执行成败的返回码。
+"no"
+表示调用方法之后不等待其执行完成也不显示应答数据， 而是直接退出，并且不返回有意义的返回码。 如果只是想屏蔽应答数据， 应该使用
+\fB\-\-quiet\fR
+选项。 默认值为
+"yes"
+.RE
+.PP
+\fB\-\-auto\-start=\fR\fIBOOL\fR
+.RS 4
+与
+\fBcall\fR
+命令连用， 设置是否应该隐含的启动当前尚未运行、 但是被配置为自动启动的服务。 默认是
+"yes"
+.RE
+.PP
+\fB\-\-allow\-interactive\-authorization=\fR\fIBOOL\fR
+.RS 4
+与
+\fBcall\fR
+命令连用， 设置服务在执行操作时， 是否应该强制进行交互式授权(在安全策略已配置的时候)。 默认是
+"yes"
+.RE
+.PP
+\fB\-\-timeout=\fR\fISECS\fR
+.RS 4
+与
+\fBcall\fR
+命令连用， 设置等候方法完成的最大秒数。 注意，此处的超时设置对
+\fB\-\-expect\-reply=no\fR
+无效。 可使用明确的时间单位后缀： us, ms, s, min, h, d, w, month, y 。 默认值是"25s"
+(注意，设为"0"也等价于"25s")。
+.RE
+.PP
+\fB\-\-augment\-creds=\fR\fIBOOL\fR
+.RS 4
+设置
+\fBlist\fR/\fBstatus\fR
+命令报告的凭据数据 是否应该被扩展为包含来自
+/proc
+的数据。 若设为"yes"(默认值)， 那么显示的数据可能会不一致， 因为
+/proc
+中的数据可能会更新。
+.RE
+.PP
+\fB\-\-user\fR
+.RS 4
+与当前调用用户的用户服务管理器(systemd 用户实例)通信， 而不是默认的系统服务管理器(systemd 系统实例)。
+.RE
+.PP
+\fB\-\-system\fR
+.RS 4
+与系统服务管理器(systemd 系统实例)通信， 这是默认值。
+.RE
+.PP
+\fB\-H\fR, \fB\-\-host=\fR
+.RS 4
+操作指定的远程主机。可以仅指定一个主机名(hostname)， 也可以使用
+"username@hostname"
+格式。 hostname 后面还可以加上容器名(以冒号分隔)， 也就是形如
+"hostname:container"
+的格式， 以表示直接连接到指定主机的指定容器内。 操作将通过SSH协议进行，以确保安全。 可以通过
+\fBmachinectl \-H \fR\fB\fIHOST\fR\fR
+命令列出远程主机上的所有容器名称。
+.RE
+.PP
+\fB\-M\fR, \fB\-\-machine=\fR
+.RS 4
+在本地容器内执行操作。 必须明确指定容器的名称。
+.RE
+.PP
+\fB\-\-no\-pager\fR
+.RS 4
+不将程序的输出内容管道(pipe)给分页程序。
+.RE
+.PP
+\fB\-\-no\-legend\fR
+.RS 4
+不输出列标题， 也就是不在输出列表的头部和尾部显示字段的名称。
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+显示简短的帮助信息并退出。
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+显示简短的版本信息并退出。
+.RE
+.SH "命令"
+.PP
+能够识别的命令如下：
+.PP
+\fBlist\fR
+.RS 4
+显示总线上的所有peer(依据服务名称)，这是默认命令。 默认同时显示"唯一名"(UniqueName)与"易读名"(well\-known name)， 但是可以使用
+\fB\-\-unique\fR
+与
+\fB\-\-acquired\fR
+选项进行修改。
+.RE
+.PP
+\fBstatus\fR [\fISERVICE\fR]
+.RS 4
+如果 SERVICE 是一个总线服务的"唯一名"或"易读名"， 那么显示该服务的进程信息及凭证信息。 如果 SERVICE 是一个进程的PID，那么显示该进程的进程信息及凭证信息。 如果未指定 SERVICE 参数，那么显示总线所有者的进程信息及凭证信息。
+.RE
+.PP
+\fBmonitor\fR [\fISERVICE\fR...]
+.RS 4
+监视已交换的消息，可使用 Ctrl\-C 中断监视。 如果未指定
+\fISERVICE\fR
+参数，那么显示总线上的所有消息。 如果指定了
+\fISERVICE\fR
+参数("唯一名"或"易读名")， 那么仅显示到达此peer或者从此peer发出的消息。
+.RE
+.PP
+\fBcapture\fR [\fISERVICE\fR...]
+.RS 4
+与
+\fBmonitor\fR
+命令类似， 不同之处在于以 pcap 格式输出(详见
+\m[blue]\fBLibpcap File Format\fR\m[]\&\s-2\u[1]\d\s+2)。 强烈推荐将 STDOUT 重定向到一个文件中，然后使用
+\fBwireshark\fR(1)
+工具查看与分析。
+.RE
+.PP
+\fBtree\fR [\fISERVICE\fR...]
+.RS 4
+显示服务的对象树。 如果给出了
+\fISERVICE\fR
+参数， 那么仅显示指定服务的对象树， 否则显示总线上所有具有"易读名"服务的对象树。
+.RE
+.PP
+\fBintrospect\fR \fISERVICE\fR \fIOBJECT\fR [\fIINTERFACE\fR]
+.RS 4
+显示SERVICE服务上OBJECT对象(以路径表示)的 interface, method, property, signal 值。 如果指定了 INTERFACE 参数， 那么仅输出指定接口上的成员。
+.RE
+.PP
+\fBcall\fR \fISERVICE\fR \fIOBJECT\fR \fIINTERFACE\fR \fIMETHOD\fR [\fISIGNATURE\fR\ [\fIARGUMENT\fR...]]
+.RS 4
+调用一个方法并显示应答。 必须指定服务名称(SERVICE)、对象路径(OBJECT)、接口名称(INTERFACE)、方法名称(METHOD)。 如果要给方法传递参数， 那么必须使用类型标记(SIGNATURE)后跟一个参数字符串(ARGUMENT)。 格式细节参见下面的"参数格式"小节。 可以使用
+\fB\-\-quiet\fR
+选项抑制输出。
+.RE
+.PP
+\fBget\-property\fR \fISERVICE\fR \fIOBJECT\fR \fIINTERFACE\fR \fIPROPERTY\fR...
+.RS 4
+显示对象属性的当前值。 必须指定服务名称(SERVICE)、对象路径(OBJECT)、接口名称(INTERFACE)、属性名称(PROPERTY)。 如果同时指定了多个属性名称，那么将按照每行一个，依次显示每个属性的当前值。 默认以精简格式输出， 但是可以使用
+\fB\-\-verbose\fR
+选项以详细格式输出。
+.RE
+.PP
+\fBset\-property\fR \fISERVICE\fR \fIOBJECT\fR \fIINTERFACE\fR \fIPROPERTY\fR \fISIGNATURE\fR \fIARGUMENT\fR...
+.RS 4
+设置对象属性的当前值。 必须指定下列参数： 服务名称(SERVICE)、对象路径(OBJECT)、接口名称(INTERFACE)、 属性名称(PROPERTY)、类型标记(SIGNATURE)、参数字符串(ARGUMENT)。
+.RE
+.PP
+\fBhelp\fR
+.RS 4
+显示语法帮助
+.RE
+.SH "参数格式"
+.PP
+\fBcall\fR
+与
+\fBset\-property\fR
+命令都接收一个类型标记(SIGNATURE)与多个参数字符串(ARGUMENT)。 有关"类型标记"的详细说明， 参见
+\m[blue]\fBType system chapter of the D\-Bus specification\fR\m[]\&\s-2\u[2]\d\s+2
+文档的"Type System"小节。 对于简单类型(Basic types)， 类型标记(SIGNATURE)后面的每个参数(ARGUMENT)都必须是参数值的字符串表示。 布尔类型真值可以表示为
+"true",
+"yes",
+"on",
+"1"
+； 布尔类型假值可以表示为
+"false",
+"no",
+"off",
+"0"
+。 对于数组，先是一个表示数组项数的数字，然后跟着数组中的每一项。 对于变量，先是一个表示变量类型的字符，然后跟着变量的值。 对于字典与结构，直接指定其内容即可。
+.PP
+例如，
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+s jawoll
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+是一个简单的字符串
+"jawoll"
+， "s"是类型标记，"jawoll"是参数字符串。
+.PP
+.if n \{\
+.RS 4
+.\}
+.nf
+as 3 hello world foobar
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+是一个字符串数组，包含3个成员，分别是
+"hello",
+"world",
+"foobar"
+.PP
+.if n \{\
+.RS 4
+.\}
+.nf
+a{sv} 3 One s Eins Two u 2 Yes b true
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+是一个字典数组， 该字典将字符串映射为变量，包含3个成员，分别是： 字符串
+"One"
+映射到字符串
+"Eins"
+， 字符串
+"Two"
+映射到32位无符号整数"2"， 字符串
+"Yes"
+映射到布尔真值。
+.PP
+注意，
+\fBcall\fR,
+\fBget\-property\fR,
+\fBintrospect\fR
+命令在输出应答时也同样是这个格式。 由于这个格式过于精简不易理解， 所以
+\fBcall\fR
+与
+\fBget\-property\fR
+命令提供了
+\fB\-\-verbose\fR
+选项用于输出详细的、 易于理解的多行输出格式。
+.SH "例子"
+.PP
+\fBExample\ \&1.\ \&读写属性\fR
+.PP
+下面的两个命令，首先写入一个属性，然后再读取它。 该属性位于
+"org\&.freedesktop\&.systemd1"
+服务的
+"/org/freedesktop/systemd1"
+对象中， 属性名是
+"org\&.freedesktop\&.systemd1\&.Manager"
+接口上的
+"LogLevel"
+， 此属性是一个简单的字符串：
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# busctl set\-property org\&.freedesktop\&.systemd1 /org/freedesktop/systemd1 org\&.freedesktop\&.systemd1\&.Manager LogLevel s debug
+# busctl get\-property org\&.freedesktop\&.systemd1 /org/freedesktop/systemd1 org\&.freedesktop\&.systemd1\&.Manager LogLevel s "debug"
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&2.\ \&精简输出与详细输出\fR
+.PP
+下面的两个命令，两次读取同一个属性(字符串数组类型)， 第一次以精简格式显示， 第二次以详细格式显示：
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ busctl get\-property org\&.freedesktop\&.systemd1 /org/freedesktop/systemd1 org\&.freedesktop\&.systemd1\&.Manager Environment
+as 2 "LANG=en_US\&.utf8" "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin"
+$ busctl get\-property \-\-verbose org\&.freedesktop\&.systemd1 /org/freedesktop/systemd1 org\&.freedesktop\&.systemd1\&.Manager Environment
+ARRAY "s" {
+        STRING "LANG=en_US\&.utf8";
+        STRING "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin";
+};
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&3.\ \&调用方法\fR
+.PP
+下面的命令， 在
+"org\&.freedesktop\&.systemd1"
+服务的
+"/org/freedesktop/systemd1"
+对象的
+"org\&.freedesktop\&.systemd1\&.Manager"
+接口上调用了
+"StartUnit"
+方法， 并且给此方法传递了
+"cups\&.service"
+与
+"replace"
+两个字符串。 而此方法返回了一个对象路径：
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# busctl call org\&.freedesktop\&.systemd1 /org/freedesktop/systemd1 org\&.freedesktop\&.systemd1\&.Manager StartUnit ss "cups\&.service" "replace"
+o "/org/freedesktop/systemd1/job/42684"
+.fi
+.if n \{\
+.RE
+.\}
+.SH "参见"
+.PP
+\fBdbus-daemon\fR(1),
+\m[blue]\fBD\-Bus\fR\m[]\&\s-2\u[3]\d\s+2,
+\fBsd-bus\fR(3),
+\fBsystemd\fR(1),
+\fBmachinectl\fR(1),
+\fBwireshark\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+Libpcap File Format
+.RS 4
+\%http://wiki.wireshark.org/Development/LibpcapFileFormat
+.RE
+.IP " 2." 4
+Type system chapter of the D-Bus specification
+.RS 4
+\%http://dbus.freedesktop.org/doc/dbus-specification.html#type-system
+.RE
+.IP " 3." 4
+D-Bus
+.RS 4
+\%http://freedesktop.org/wiki/Software/dbus
+.RE
+.\" manpages-zh translator: 金步国
+.\" manpages-zh comment: 金步国作品集：http://www.jinbuguo.com

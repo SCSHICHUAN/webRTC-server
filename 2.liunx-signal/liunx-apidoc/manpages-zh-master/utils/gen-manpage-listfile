@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+
+# Generate src/man*/manpages file, used by make.
+#
+# Copyright (c) 2020 Boyuan Yang <byang@debian.org>
+# This script is released into the public domain.
+
+# Man pages under 'src/man?'
+#
+# Assumed man page naming scheme: *.\d*
+
+import sys
+from pathlib import Path
+
+
+MIN_PYTHON = (3, 4)
+if sys.version_info < MIN_PYTHON:
+    sys.exit('Python %s.%s or later is required.' % MIN_PYTHON)
+
+
+MAN_DIR_LIST = ['man{}'.format(x) for x in [1, 2, 3, 4, 5, 6, 7, 8, 'n']]
+EXCLUDE_FILES = ['Makefile.am']
+
+
+def _ensure_pwd():
+    'Ensure the script to be ran under project topdir.'
+    pass
+
+def _scan_filelist(dirpath):
+    my_pathlist = dirpath.glob('*.*')
+    my_filelist = list()
+    for i in my_pathlist:
+        if (i.name not in EXCLUDE_FILES) and (i.is_file()):
+            my_filelist.append(i.name)
+    return sorted(my_filelist)
+
+def do_generate(dirpath):
+    assert dirpath.exists()
+    assert dirpath.is_dir()
+    filelist = _scan_filelist(dirpath)
+    with open(dirpath / 'manpages', mode='wt', encoding='UTF-8') as f:
+        f.write('MANPAGES = \\\n')
+        _is_first_iter = True
+        for entry in filelist:
+            if _is_first_iter:
+                f.write('\t' + entry)
+                _is_first_iter = False
+            else:
+                f.write(' \\\n' + '\t' + entry)
+
+def main():
+    _ensure_pwd()
+    for mandir in MAN_DIR_LIST:
+        my_dirpath = Path('.') / 'src' / mandir
+        do_generate(my_dirpath)
+    return
+
+if __name__ == '__main__':
+    main()

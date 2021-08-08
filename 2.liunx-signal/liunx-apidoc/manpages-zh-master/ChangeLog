@@ -1,0 +1,261 @@
+2020-05-20  Boyuan Yang <073plan@gmail.com>
+
+	* Minor fix on console_codes(4).
+	  Closes: https://github.com/manpages-zh/manpages_zh/pull/19
+
+2020-05-14  Boyuan Yang <073plan@gmail.com>
+
+	* Add coreutils 8.32 translation: od(1).
+	* Add coreutils 8.32 translation: pr(1).
+
+2020-05-12  Boyuan Yang <073plan@gmail.com>
+
+	* Replace old fileutils ln(1) with coreutils ln(1).
+	* Replace old bsdutils kill(1) with coreutils kill(1).
+
+2020-05-09  Boyuan Yang <073plan@gmail.com>
+
+	* Import translation for coreutils 8.32:
+	  Add basenc(1), chcon(1), nl(1), nproc(1),
+	  shuf(1), stdbuf(1).
+	* Add COPYRIGHT file for per-file license info.
+	* Add utils/gen-manpage-listfile script to automatically
+	  generate src/man*/manpages file.
+	* Release 1.6.3.4.
+
+2018-05-18  Boyuan Yang <073plan@gmail.com>
+
+	* Remove man page stub for bash builtins.
+
+2018-04-28  Boyuan Yang <073plan@gmail.com>
+
+	* Fix FSSTND dir entry in at(1).
+	* Let unsq(1) use the same content of sq(1).
+	* Remove executable permission from Makefile.am files.
+	* Slight update to TODO file.
+	* Release 1.6.3.3.
+
+2018-04-17  Boyuan Yang <073plan@gmail.com>
+
+	* Manually translate wall(1).
+
+2017-10-19  Boyuan Yang <073plan@gmail.com>
+
+	* Update man page for coreutils to v8.28:
+	  Add tsort(1).
+	* Stop installing gcc(1), text severely outdated.
+	* Release 1.6.3.2.
+
+2017-10-18  Boyuan Yang <073plan@gmail.com>
+
+	* Fix a typo in bash(1).
+
+2017-05-15  Means Lee <leemeans@qq.com>
+
+	* Add manual translation for sed(1).
+
+2017-04-13  Boyuan Yang <073plan@gmail.com>
+
+	* Add a project logo into DOCS directory.
+	* Release 1.6.3.1.
+
+2017-04-09  Boyuan Yang <073plan@gmail.com>
+
+	* Add more translated man pages of systemd:
+	  machine-id(5), machine-info(5), modules-load.d(5),
+	  networkd.conf(5), resolved.conf(5), sysctl.d(5),
+	  nss-myhostname(8), nss-mymachines(8), nss-resolve(8)
+	* Replace old shutdown(8) with systemd-provided one.
+	* Retranslate more(1).
+
+2017-04-05  Boyuan Yang <073plan@gmail.com>
+
+	* Add comment function to append-colophon utility.
+	* Add some systemd man pages provided by 金步国:
+	  bootctl(1), busctl(1), hostnamectl(1), journalctl(1),
+	  localectl(1), loginctl(1), systemctl(1), networkctl(1),
+	  systemd-ask-password(1), systemd-cat(1), systemd-cgls(1),
+	  systemd-delta(1), systemd-detect-virt(1), systemd-escape(1),
+	  systemd-firstboot(1), systemd-firstboot.service(1),
+	  systemd-inhibit(1), systemd-machine-id-setup(1),
+	  systemd-notify(1), systemd-path(1), systemd-resolve(1),
+	  systemd-socket-activate(1), systemd-tty-ask-password-agent(1),
+	  systemd(1), timedatectl(1), binfmt.d(5), hostname(5),
+	  journald.conf(5), locale.conf(5), localtime(5),
+	  logind.conf(5), os-release(5), vconsole.conf(5), bootup(7),
+	  daemon(7), file-hierarchy(7), hwdb(7), kernel-command-line(7),
+	  halt(8), systemd-quotacheck(8), systemd-quotacheck.service(8)
+	* Release 1.6.3.
+
+2017-03-05  Boyuan Yang <073plan@gmail.com>
+
+	* Retranslate shells(5).
+	* Import new translation:
+	  - pinky(1)
+
+2017-03-04  Boyuan Yang <073plan@gmail.com>
+
+	* Import new translation:
+	  - truncate(1)
+	* Retranslate for coreutils:
+	  - fold(1)
+	  - uniq(1)
+	* Refresh coreutils release date (2017-01 now).
+	* Release 1.6.2.1.
+
+2017-02-26  Boyuan Yang <073plan@gmail.com>
+
+	* Import new translation:
+	  - readlink(1)
+
+2017-02-21  Boyuan Yang <073plan@gmail.com>
+
+	* Fix a typo in realpath(1).
+	* Import new translation:
+	  + chroot(8)
+	* Retranslate tee(1).
+
+2017-02-16  Boyuan Yang <073plan@gmail.com>
+
+	* Remove charset(1), disappeared since 2013.
+	* Remove reference to zh.tmac.
+	* Let append-colophon script recognize mdoc format.
+	  (GitHub: man-pages-zh/manpages-zh#4)
+	* Raise error on disabling both zh_CN and zh_TW format in configure.ac.
+	* Follow changes in coreutils translation:
+	  + translation for realpath(1).
+	  + update translation for id(1), install(1), md5sum(1), nohup(1).
+	* Release 1.6.2.
+
+2017-02-15  Boyuan Yang <073plan@gmail.com>
+
+	* Fix behaviour changes in coreutils.
+	  - Retranslate cp(1), mkdir(1), mkfifo(1), mknod(1).
+	    (GitHub: man-pages-zh/manpages-zh#1, lidaobing/manpages-zh#18)
+		(RH: #1263636)
+
+2017-02-15  Boyuan Yang <073plan@gmail.com>
+
+	* Retranslate intro(1) using po4a.
+	* Remove outdated src/cman/ conf examples.
+	  Modern man-db and groff can handle Chinese properly.
+	* Remove outdated tools in utils/ dir.
+	  Most of them are provided by external software "opencc".
+	* Refine README.md.
+	* Release 1.6.1.
+
+2017-02-12  Boyuan Yang <073plan@gmail.com>
+
+	* Retranslate w(1) using po4a.
+
+2017-02-10  Boyuan Yang <073plan@gmail.com>
+
+	* Drop sync(8), superceded by sync(1).
+	* Partial translation of ping(8).
+	* Refresh translation for info(5).
+	* Minor updates for:
+	  - basename(3)
+
+2016-12-24  Boyuan Yang <073plan@gmail.com>
+
+	* Drop mailto(1), disappeared since Debian 6.
+
+2016-12-24  Boyuan Yang <073plan@gmail.com>
+
+	* minor fix for append-colophon.
+	* Also distribute append-colophon in tarball.
+	* Drop zic2xpm(6), disappeared since Debian 6.
+	* Partial translation update of info(1).
+	* Release 1.6.0.
+
+2016-12-23  Boyuan Yang <073plan@gmail.com>
+
+	* Remove support for non-UTF8 encoding.
+	* Replace totw.pl with opencc 1.x.
+
+2016-12-22  Boyuan Yang <073plan@gmail.com>
+
+	* Full translation of fs(5), sq(1).
+	* Import new full translation from coreutils:
+	  - b2sum(1)
+	  - link(1)
+	  - pathchk(1)
+	  - printenv(1)
+	  - sha1sum(1)
+	  - sha224sum(1)
+	  - sha256sum(1)
+	  - sha384sum(1)
+	  - timeout(1)
+	  - unexpand(1)
+	  - unlink(1)
+	  - users(1)
+	  - whoami(1)
+	* Update full translation for coreutils:
+	  - arch(1)
+	  - base32(1)
+	  - base64(1)
+	  - basename(1)
+	  - cat(1)
+	  - chgrp(1)
+	  - cksum(1)
+	  - dirname(1)
+	  - echo(1)
+	  - env(1)
+	  - expand(1)
+	  - expr(1)
+	  - factor(1)
+	  - false(1)
+	  - groups(1)
+	  - head(1)
+	  - hostid(1)
+	  - install(1)
+	  - logname(1)
+	  - nice(1)
+	  - paste(1)
+	  - printf(1)
+	  - pwd(1)
+	  - rm(1)
+	  - rmdir(1)
+	  - seq(1)
+	  - sha512sum(1)
+	  - sleep(1)
+	  - sum(1)
+	  - sync(1)
+	  - tac(1)
+	  - test(1)
+	  - touch(1)
+	  - true(1)
+	  - tty(1)
+	  - uname(1)
+	  - wc(1)
+	  - who(1)
+	  - yes(1)
+	* Append colophon on building by default.
+	* Remove sh(1) stub since it should be dash(1) on Debian.
+	* Improve translation for gvim(1).
+	* Minor translation of rpm(8).
+
+2016-12-15  Boyuan Yang <073plan@gmail.com>
+
+	* Rewrite README into README.md.
+	* make [.1 an alias of test.1.
+	* fifo(4) -> fifo(7), complete translation.
+
+2016-12-14  Boyuan Yang <073plan@gmail.com>
+
+	* remove all conflicting man pages.
+	* remove some non-existant command pages.
+	* some minor modifications.
+	* release 1.5.4.1.
+
+2011-07-09  LI Daobing <lidaobing@gmail.com>
+
+	* remove git.1.
+	* release 1.5.2.
+
+
+The old changelog for CMPP is in DOCS/ChangeLog.
+
+Thanks.
+
+# vim:ft=changelog:

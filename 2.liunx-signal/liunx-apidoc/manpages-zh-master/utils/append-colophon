@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+
+"""append-colophon -- automatically append colophon(“跋”) when making
+
+Copyright (c) 2016-2020 Boyuan Yang <byang@debian.org>
+This file is released into the public domain.
+
+* Require UTF-8 input and output.
+"""
+
+import io
+import sys
+import fileinput
+
+# deal with I/O encoding first
+sys.stdin = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
+def utf8_print(output: str, end="\n"):
+    output_str = output + end
+    sys.stdout.buffer.write(output_str.encode('UTF-8'))
+
+def parse_is_stub(line: str) -> bool:
+    """Try-parse to see if the document is a stub"""
+    if line[:4] == ".so ":
+        return True
+    else:
+        return False
+
+def parse_translator_info(line: str, t_info: dict) -> bool:
+    """Try-parse to see if we met the translator information.
+
+    A "good" translator information should be like:
+        .\" manpages-zh translator: Foo Bar <email>
+        .\" manpages-zh date: 2016-11-22
+        .\" manpages-zh orig-date: 2012-03-22
+        .\" manpages-zh orig-package: bash
+    """
+    if line[:16] == ".\\\" manpages-zh ":
+        t_info[line[16:].split(": ")[0]] = line[16:].split(": ")[1]
+        return True
+    return False
+
+def parse_find_colophon(line: str) -> bool:
+    """Try-parse to see if this is a colophon.
+
+    Definition of colophon:
+        .SH "跋" or .SH 跋
+    """
+    colophon_lines = [
+            '.SH "跋"\n',
+            '.SH 跋\n',
+            '.Sh 跋\n',
+            '.Sh "跋"\n']
+    if line in colophon_lines:
+        return True
+    else:
+        return False
+    pass
+
+def parse_mdoc_type(line: str) -> bool:
+    """Determine if we have met a mdoc page.
+    """
+    if line[:4] == '.Sh ':
+        return True
+    else:
+        return False
+
+if __name__ == "__main__":
+    "some flags here"
+    flag_met_colophon = False
+    no_colophon = False
+    mdoc_type = False
+    t_info = {} # translator information
+    format_mdoc_lines = {
+            "new_paragraph": ".Pp",
+            "new_section_colophon": '.Sh "跋"',
+            }
+    format_man_lines = {
+            "new_paragraph": ".PP",
+            "new_section_colophon": '.SH "跋"',
+            }
+    format_lines = None
+
+    for line in fileinput.input():
+        if parse_mdoc_type(line):
+            mdoc_type = True
+        if parse_is_stub(line):
+            "only a '.so foobar.x' stub, copy as-is"
+            no_colophon = True
+        if parse_translator_info(line, t_info):
+            continue
+        if parse_find_colophon(line):
+            flag_met_colophon = True
+        utf8_print(line, end="")
+
+    "At the end of the output, append our colophon"
+    if mdoc_type:
+        format_lines = format_mdoc_lines
+    else:
+        format_lines = format_man_lines
+    if no_colophon:
+        sys.exit(0)
+    if not flag_met_colophon:
+        utf8_print(format_lines["new_section_colophon"])
+    else:
+        pass
+    #utf8_print(format_lines["new_paragraph"])
+    utf8_print('.br')
+    utf8_print('本页面中文版由中文 man 手册页计划提供。')
+
+    if len(t_info.keys()) > 0:
+        "we need another paragraph"
+        utf8_print(format_lines["new_paragraph"])
+        if "translator" in t_info.keys():
+            utf8_print('翻译人员：' + t_info["translator"], end="")
+            utf8_print('.br')
+        if "orig-date" in t_info.keys():
+            utf8_print('获取日期：' + t_info["orig-date"], end="")
+            utf8_print('.br')
+        if "date" in t_info.keys():
+            utf8_print('翻译日期：' + t_info["date"], end="")
+            utf8_print('.br')
+        if "orig-package" in t_info.keys():
+            utf8_print('原始软件：' + t_info["orig-package"], end="")
+            utf8_print('.br')
+        if "comment" in t_info.keys():
+            utf8_print(t_info["comment"], end="")
+            utf8_print('.br')
+
+    #utf8_print(format_lines["new_paragraph"])
+    utf8_print('.br')
+    utf8_print("中文 man 手册页计划：\\fB" +
+          "https://github.com/man-pages-zh/manpages-zh" +
+          "\\fR")
